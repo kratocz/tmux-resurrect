@@ -200,6 +200,11 @@ restore_pane() {
 		else
 			new_session "$session_name" "$window_number" "$dir" "$pane_index"
 		fi
+		# Strip the ":" guard save.sh puts in front of the title. Tolerant on purpose,
+		# unlike remove_first_char: save files written before the guard carry titles
+		# without it, and cutting their first character would be a regression on the
+		# first restore after upgrading.
+		pane_title="${pane_title#:}"
 		# set pane title
 		tmux select-pane -t "$session_name:$window_number.$pane_index" -T "$pane_title"
 	done < <(echo "$pane")
